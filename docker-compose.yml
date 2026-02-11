@@ -8,6 +8,9 @@ services:
     volumes:
       - ./apps/web:/app/apps/web
       - /app/apps/web/node_modules
+    depends_on:
+      - backend-graphene
+      - backend-strawberry
 
   backend-graphene:
     build:
