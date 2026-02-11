@@ -1,4 +1,9 @@
-모든 변경사항을 스테이징하고 커밋하라.
+---
+name: "Git: Commit"
+description: "모든 변경사항을 스테이징하고 Conventional Commits 형식으로 커밋"
+category: "Git Workflow"
+tags: [git, commit]
+---
 
 ## 절차
 
@@ -25,17 +30,17 @@ Conventional Commits 형식을 따른다.
 
 ### Type
 
-| Type       | 설명                          |
-| ---------- | ----------------------------- |
-| `feat`     | 새로운 기능 추가              |
-| `fix`      | 버그 수정                     |
-| `refactor` | 리팩터링 (기능 변경 없음)     |
-| `docs`     | 문서 변경                     |
-| `style`    | 코드 포맷팅, 세미콜론 등      |
-| `test`     | 테스트 추가/수정              |
-| `chore`    | 빌드, 설정 등 기타 변경       |
-| `ci`       | CI/CD 설정 변경               |
-| `perf`     | 성능 개선                     |
+| Type       | 설명                      |
+| ---------- | ------------------------- |
+| `feat`     | 새로운 기능 추가          |
+| `fix`      | 버그 수정                 |
+| `refactor` | 리팩터링 (기능 변경 없음) |
+| `docs`     | 문서 변경                 |
+| `style`    | 코드 포맷팅, 세미콜론 등  |
+| `test`     | 테스트 추가/수정          |
+| `chore`    | 빌드, 설정 등 기타 변경   |
+| `ci`       | CI/CD 설정 변경           |
+| `perf`     | 성능 개선                 |
 
 ### Scope
 

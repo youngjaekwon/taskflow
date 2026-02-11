@@ -1,4 +1,9 @@
-커밋, 푸시, PR 생성을 순차적으로 진행하라. main 브랜치를 대상으로 PR을 생성한다.
+---
+name: "Git: PR"
+description: "커밋, 푸시, PR 생성을 순차적으로 진행"
+category: "Git Workflow"
+tags: [git, pr]
+---
 
 ## 입력
 
@@ -25,13 +30,14 @@ $ARGUMENTS
 
 변경사항(staged 또는 unstaged)이 있는 경우에만 커밋을 생성한다. 변경사항이 없으면 이 단계를 건너뛴다.
 
-- `commit.md`의 커밋 컨벤션을 따른다:
+- `/git:commit`의 커밋 컨벤션을 따른다:
   - **제목**: 영어, imperative, Conventional Commits 형식 (`<type>(<scope>): <subject>`)
   - **본문**: 한국어로 변경 이유와 맥락 설명
 - 스테이징 전 `.env`, `credentials`, `secret` 등 민감 파일이 변경사항에 포함되어 있는지 확인한다
 - 민감 파일이 있으면 사용자에게 경고하고 확인을 받는다
 - `git add -A`로 모든 변경사항을 스테이징한다
 - 커밋 메시지는 HEREDOC을 사용한다:
+
   ```bash
   git commit -m "$(cat <<'EOF'
   <type>(<scope>): <subject>
@@ -54,6 +60,7 @@ $ARGUMENTS
 - `gh pr create --base main`을 사용한다
 - **타이틀**: 한국어로 작성, 70자 이내
 - **본문**: HEREDOC을 사용하여 다음 구조로 작성한다:
+
   ```bash
   gh pr create --base main --title "<한국어 타이틀>" --body "$(cat <<'EOF'
   ## Summary

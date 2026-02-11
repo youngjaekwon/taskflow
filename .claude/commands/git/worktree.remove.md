@@ -1,4 +1,9 @@
-$ARGUMENTS를 파싱하여 git worktree와 브랜치를 안전하게 삭제하라.
+---
+name: "Git: Worktree Remove"
+description: "git worktree와 브랜치를 안전하게 삭제"
+category: "Git Workflow"
+tags: [git, worktree]
+---
 
 ## 입력
 
@@ -74,6 +79,7 @@ git branch -d <브랜치명>
 ```
 
 `-d` (안전 삭제)를 사용한다. 만약 merge되지 않은 브랜치라서 실패하면:
+
 - 상황을 안내하고 AskUserQuestion 도구로 `-D` (강제 삭제)를 사용할지 사용자에게 물어본다
 - 사용자가 동의하면 `git branch -D <브랜치명>` 실행
 - 사용자가 거부하면 브랜치 삭제를 건너뛰고 안내
@@ -110,12 +116,12 @@ git branch -d <브랜치명>
 `$ARGUMENTS`가 비어있고 삭제 가능한 워크트리도 없을 때 아래를 출력한다:
 
 ```
-사용법: /worktree.remove [브랜치명]
+사용법: /git:worktree.remove [브랜치명]
 
 예시:
-  /worktree.remove feat/web/add-task-list
-  /worktree.remove fix/backend-graphene/handle-empty-query
-  /worktree.remove                          # 목록에서 선택
+  /git:worktree.remove feat/web/add-task-list
+  /git:worktree.remove fix/backend-graphene/handle-empty-query
+  /git:worktree.remove                          # 목록에서 선택
 
 브랜치명을 생략하면 현재 워크트리 목록에서 선택할 수 있습니다.
 ```

@@ -1,4 +1,9 @@
-$ARGUMENTS를 파싱하여 git worktree와 브랜치를 한 번에 생성하라.
+---
+name: "Git: Worktree New"
+description: "git worktree와 브랜치를 한 번에 생성"
+category: "Git Workflow"
+tags: [git, worktree]
+---
 
 ## 입력
 
@@ -17,9 +22,9 @@ Conventional Commits 형식의 문자열을 받는다: `<type>(<scope>): <subjec
 3. subject를 kebab-case로 변환한다 (소문자화, 공백을 하이픈으로 치환)
 4. 브랜치명과 워크트리 경로를 조합한다:
 
-   | 항목 | scope 있음 | scope 없음 |
-   |------|-----------|-----------|
-   | 브랜치명 | `<type>/<scope>/<subject-kebab>` | `<type>/<subject-kebab>` |
+   | 항목          | scope 있음                          | scope 없음                  |
+   | ------------- | ----------------------------------- | --------------------------- |
+   | 브랜치명      | `<type>/<scope>/<subject-kebab>`    | `<type>/<subject-kebab>`    |
    | 워크트리 경로 | `../<type>-<scope>-<subject-kebab>` | `../<type>-<subject-kebab>` |
 
 5. 동일 브랜치가 이미 존재하는지 `git branch --list <브랜치명>`으로 확인한다
@@ -49,32 +54,32 @@ cd <워크트리 경로>
 ## 사용법 안내
 
 ```
-사용법: /worktree.new <type>(<scope>): <subject>
+사용법: /git:worktree.new <type>(<scope>): <subject>
 
 예시:
-  /worktree.new feat(web): add task list component
-  /worktree.new fix(backend-graphene): handle empty query
-  /worktree.new chore: update dependencies
+  /git:worktree.new feat(web): add task list component
+  /git:worktree.new fix(backend-graphene): handle empty query
+  /git:worktree.new chore: update dependencies
 
 Type: feat, fix, refactor, docs, style, test, chore, ci, perf
 Scope: 선택사항 (web, backend-graphene, backend-strawberry 등)
 ```
 
-## 참조 컨벤션 (commit.md와 동일)
+## 참조 컨벤션 (/git:commit과 동일)
 
 ### Type
 
-| Type       | 설명                          |
-| ---------- | ----------------------------- |
-| `feat`     | 새로운 기능 추가              |
-| `fix`      | 버그 수정                     |
-| `refactor` | 리팩터링 (기능 변경 없음)     |
-| `docs`     | 문서 변경                     |
-| `style`    | 코드 포맷팅, 세미콜론 등      |
-| `test`     | 테스트 추가/수정              |
-| `chore`    | 빌드, 설정 등 기타 변경       |
-| `ci`       | CI/CD 설정 변경               |
-| `perf`     | 성능 개선                     |
+| Type       | 설명                      |
+| ---------- | ------------------------- |
+| `feat`     | 새로운 기능 추가          |
+| `fix`      | 버그 수정                 |
+| `refactor` | 리팩터링 (기능 변경 없음) |
+| `docs`     | 문서 변경                 |
+| `style`    | 코드 포맷팅, 세미콜론 등  |
+| `test`     | 테스트 추가/수정          |
+| `chore`    | 빌드, 설정 등 기타 변경   |
+| `ci`       | CI/CD 설정 변경           |
+| `perf`     | 성능 개선                 |
 
 ### Scope
 
