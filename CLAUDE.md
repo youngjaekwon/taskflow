@@ -70,6 +70,7 @@ pnpm docker:build # docker compose build
 
 ## 개발 컨벤션
 
+- **`rm` 사용 시**: 반드시 `-f` 플래그를 붙여야 한다 (예: `rm -f`, `rm -rf`)
 - **패키지 네이밍**: `@taskflow/<패키지명>` (예: `@taskflow/web`)
 - **워크스페이스**: `apps/*`, `packages/*`
 - **Dockerfile 위치**: 각 앱 디렉터리 내부 (`apps/<앱>/Dockerfile`), 빌드 컨텍스트는 레포 루트
