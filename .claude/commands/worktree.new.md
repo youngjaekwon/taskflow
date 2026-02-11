@@ -49,12 +49,12 @@ cd <워크트리 경로>
 ## 사용법 안내
 
 ```
-사용법: /worktree:new <type>(<scope>): <subject>
+사용법: /worktree.new <type>(<scope>): <subject>
 
 예시:
-  /worktree:new feat(web): add task list component
-  /worktree:new fix(backend-graphene): handle empty query
-  /worktree:new chore: update dependencies
+  /worktree.new feat(web): add task list component
+  /worktree.new fix(backend-graphene): handle empty query
+  /worktree.new chore: update dependencies
 
 Type: feat, fix, refactor, docs, style, test, chore, ci, perf
 Scope: 선택사항 (web, backend-graphene, backend-strawberry 등)

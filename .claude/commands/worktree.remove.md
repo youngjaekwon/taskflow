@@ -110,12 +110,12 @@ git branch -d <브랜치명>
 `$ARGUMENTS`가 비어있고 삭제 가능한 워크트리도 없을 때 아래를 출력한다:
 
 ```
-사용법: /worktree:remove [브랜치명]
+사용법: /worktree.remove [브랜치명]
 
 예시:
-  /worktree:remove feat/web/add-task-list
-  /worktree:remove fix/backend-graphene/handle-empty-query
-  /worktree:remove                          # 목록에서 선택
+  /worktree.remove feat/web/add-task-list
+  /worktree.remove fix/backend-graphene/handle-empty-query
+  /worktree.remove                          # 목록에서 선택
 
 브랜치명을 생략하면 현재 워크트리 목록에서 선택할 수 있습니다.
 ```
