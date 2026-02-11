@@ -46,7 +46,7 @@ GraphQL 기반 태스크 관리 연습 프로젝트. 두 가지 Django GraphQL �
 - Conventional Commits 형식 사용
 
 ## Domain Context
-태스크 관리 도메인: Task CRUD, 상태 관리 (TODO/IN_PROGRESS/DONE), 우선순위, 카테고리/태그
+태스크 관리 도메인: Task CRUD, 상태 관리 (TODO/IN_PROGRESS/IN_REVIEW/DONE), 우선순위, 라벨
 
 ## Important Constraints
 - 현재 보일러플레이트 단계 — 각 앱의 스크립트와 Dockerfile은 placeholder
