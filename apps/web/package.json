@@ -1,0 +1,11 @@
+{
+  "name": "@taskflow/web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'SvelteKit dev server placeholder'",
+    "build": "echo 'SvelteKit build placeholder'",
+    "preview": "echo 'SvelteKit preview placeholder'",
+    "lint": "echo 'lint placeholder'"
+  }
+}

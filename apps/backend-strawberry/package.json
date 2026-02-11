@@ -1,0 +1,11 @@
+{
+  "name": "@taskflow/backend-strawberry",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Django Strawberry dev server placeholder'",
+    "build": "echo 'Django Strawberry build placeholder'",
+    "test": "echo 'Django Strawberry test placeholder'",
+    "lint": "echo 'lint placeholder'"
+  }
+}

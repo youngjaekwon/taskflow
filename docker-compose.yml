@@ -1,0 +1,28 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./apps/web:/app/apps/web
+      - /app/apps/web/node_modules
+
+  backend-graphene:
+    build:
+      context: .
+      dockerfile: apps/backend-graphene/Dockerfile
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./apps/backend-graphene:/app/apps/backend-graphene
+
+  backend-strawberry:
+    build:
+      context: .
+      dockerfile: apps/backend-strawberry/Dockerfile
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./apps/backend-strawberry:/app/apps/backend-strawberry

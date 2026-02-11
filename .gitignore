@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Turborepo
+.turbo/
+
+# Build outputs
+build/
+dist/
+
+# SvelteKit
+.svelte-kit/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+*.egg
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+.coverage.*
+
+# Testing
+.pytest_cache/
+.mypy_cache/

@@ -1,0 +1,11 @@
+{
+  "name": "@taskflow/backend-graphene",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Django Graphene dev server placeholder'",
+    "build": "echo 'Django Graphene build placeholder'",
+    "test": "echo 'Django Graphene test placeholder'",
+    "lint": "echo 'lint placeholder'"
+  }
+}
