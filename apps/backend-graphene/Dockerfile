@@ -6,13 +6,13 @@ FROM python:3.13-slim
 
 WORKDIR /app/apps/backend-graphene
 
-# TODO: Copy requirements and install dependencies
-# COPY apps/backend-graphene/requirements.txt ./
-# RUN pip install -r requirements.txt
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# TODO: Copy source code
-# COPY apps/backend-graphene/ ./
+COPY apps/backend-graphene/pyproject.toml apps/backend-graphene/uv.lock ./
+RUN uv sync --frozen --no-dev
+
+COPY apps/backend-graphene/ ./
 
 EXPOSE 8000
 
-CMD ["echo", "Django Graphene container placeholder - configure after project setup"]
+CMD ["uv", "run", "manage.py", "runserver", "0.0.0.0:8000"]

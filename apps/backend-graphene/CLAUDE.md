@@ -36,11 +36,12 @@
 
 - Python snake_case → GraphQL camelCase 자동 변환에 의존
 
-## 5. GraphQL 스키마 및 DRF 연동
+## 5. GraphQL 스키마 및 검증
 
 - DjangoObjectType의 `fields`는 명시적 화이트리스트 (`__all__` 금지)
-- DRF Serializer를 유효성 검증의 단일 진실 공급원으로 사용
-- SerializerMutation으로 기존 Serializer를 재사용
+- DRF Serializer는 REST API의 유효성 검증에만 사용
+- GraphQL mutation의 유효성 검증은 Django 모델 검증(`clean_fields`)을 사용
+- GraphQL과 DRF 계층은 결합하지 않는다
 
 ## 6. N+1 쿼리 최적화 (Promise DataLoader)
 
