@@ -70,6 +70,8 @@ pnpm docker:build # docker compose build
 
 ## 개발 컨벤션
 
+- **Python 패키지 매니저**: uv
+- **Python 린터 & 포매터**: ruff
 - **`rm` 사용 시**: 반드시 `-f` 플래그를 붙여야 한다 (예: `rm -f`, `rm -rf`)
 - **패키지 네이밍**: `@taskflow/<패키지명>` (예: `@taskflow/web`)
 - **워크스페이스**: `apps/*`, `packages/*`
