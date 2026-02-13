@@ -79,6 +79,7 @@ class LoginSerializer(serializers.Serializer):
 class PasswordChangeSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True)
+    new_password_confirm = serializers.CharField(write_only=True)
 
     def validate_old_password(self, value):
         user = self.context["request"].user
@@ -89,6 +90,13 @@ class PasswordChangeSerializer(serializers.Serializer):
     def validate_new_password(self, value):
         validate_password(value)
         return value
+
+    def validate(self, data):
+        if data["new_password"] != data["new_password_confirm"]:
+            raise serializers.ValidationError(
+                {"new_password_confirm": "비밀번호가 일치하지 않습니다."}
+            )
+        return data
 
 
 class PasswordResetRequestSerializer(serializers.Serializer):

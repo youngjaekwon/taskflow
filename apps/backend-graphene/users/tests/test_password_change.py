@@ -11,7 +11,11 @@ class TestPasswordChangeView:
     def test_change_password_success(self, auth_client, verified_user):
         response = auth_client.post(
             PASSWORD_CHANGE_URL,
-            {"old_password": "testpass123!", "new_password": "NewStrong456!"},
+            {
+                "old_password": "testpass123!",
+                "new_password": "NewStrong456!",
+                "new_password_confirm": "NewStrong456!",
+            },
             format="json",
         )
         assert response.status_code == 200
@@ -23,7 +27,11 @@ class TestPasswordChangeView:
     def test_change_password_wrong_old(self, auth_client):
         response = auth_client.post(
             PASSWORD_CHANGE_URL,
-            {"old_password": "wrongpass", "new_password": "NewStrong456!"},
+            {
+                "old_password": "wrongpass",
+                "new_password": "NewStrong456!",
+                "new_password_confirm": "NewStrong456!",
+            },
             format="json",
         )
         assert response.status_code == 400
@@ -31,7 +39,11 @@ class TestPasswordChangeView:
     def test_change_password_weak_new(self, auth_client):
         response = auth_client.post(
             PASSWORD_CHANGE_URL,
-            {"old_password": "testpass123!", "new_password": "123"},
+            {
+                "old_password": "testpass123!",
+                "new_password": "123",
+                "new_password_confirm": "123",
+            },
             format="json",
         )
         assert response.status_code == 400
@@ -39,16 +51,37 @@ class TestPasswordChangeView:
     def test_change_password_unauthenticated(self, api_client):
         response = api_client.post(
             PASSWORD_CHANGE_URL,
-            {"old_password": "testpass123!", "new_password": "NewStrong456!"},
+            {
+                "old_password": "testpass123!",
+                "new_password": "NewStrong456!",
+                "new_password_confirm": "NewStrong456!",
+            },
             format="json",
         )
         assert response.status_code in (401, 403)
+
+    def test_change_password_mismatch(self, auth_client):
+        response = auth_client.post(
+            PASSWORD_CHANGE_URL,
+            {
+                "old_password": "testpass123!",
+                "new_password": "NewStrong456!",
+                "new_password_confirm": "DifferentPass789!",
+            },
+            format="json",
+        )
+        assert response.status_code == 400
+        assert "new_password_confirm" in response.data
 
     def test_change_password_invalidates_old_tokens(self, auth_client, verified_user):
         old_refresh = RefreshToken.for_user(verified_user)
         auth_client.post(
             PASSWORD_CHANGE_URL,
-            {"old_password": "testpass123!", "new_password": "NewStrong456!"},
+            {
+                "old_password": "testpass123!",
+                "new_password": "NewStrong456!",
+                "new_password_confirm": "NewStrong456!",
+            },
             format="json",
         )
         # Old refresh token should be blacklisted
