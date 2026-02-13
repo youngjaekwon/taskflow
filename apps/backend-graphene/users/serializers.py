@@ -107,12 +107,18 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
     uid = serializers.CharField()
     token = serializers.CharField()
     new_password = serializers.CharField(write_only=True)
+    new_password_confirm = serializers.CharField(write_only=True)
 
     def validate_new_password(self, value):
         validate_password(value)
         return value
 
     def validate(self, data):
+        if data["new_password"] != data["new_password_confirm"]:
+            raise serializers.ValidationError(
+                {"new_password_confirm": "비밀번호가 일치하지 않습니다."}
+            )
+
         try:
             uid = force_str(urlsafe_base64_decode(data["uid"]))
             user = User.objects.get(pk=uid)
