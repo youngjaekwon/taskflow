@@ -25,6 +25,19 @@ class TestLogoutView:
         response = api_client.post(LOGOUT_URL, {"refresh": str(refresh)}, format="json")
         assert response.status_code == 200
 
+    def test_logout_invalidates_all_user_tokens(self, api_client, verified_user):
+        """로그아웃 시 해당 사용자의 모든 refresh token이 무효화된다."""
+        refresh1 = RefreshToken.for_user(verified_user)
+        refresh2 = RefreshToken.for_user(verified_user)
+
+        # refresh1으로 로그아웃
+        response = api_client.post(LOGOUT_URL, {"refresh": str(refresh1)}, format="json")
+        assert response.status_code == 200
+
+        # refresh2도 무효화되었는지 확인
+        response = api_client.post(LOGOUT_URL, {"refresh": str(refresh2)}, format="json")
+        assert response.status_code == 400
+
     def test_logout_missing_refresh(self, api_client):
         response = api_client.post(LOGOUT_URL, {}, format="json")
         assert response.status_code == 400

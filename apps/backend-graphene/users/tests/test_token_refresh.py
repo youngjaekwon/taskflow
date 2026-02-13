@@ -28,3 +28,27 @@ class TestTokenRefreshView:
             REFRESH_URL, {"refresh": str(refresh)}, format="json"
         )
         assert response.status_code == 401
+
+    def test_refresh_returns_new_refresh_token(self, api_client, verified_user):
+        """토큰 갱신 시 새 refresh token이 응답에 포함된다 (rotation)."""
+        refresh = RefreshToken.for_user(verified_user)
+        response = api_client.post(
+            REFRESH_URL, {"refresh": str(refresh)}, format="json"
+        )
+        assert response.status_code == 200
+        assert "refresh" in response.data
+        assert response.data["refresh"] != str(refresh)
+
+    def test_old_refresh_token_blacklisted_after_rotation(self, api_client, verified_user):
+        """갱신 후 이전 refresh token이 블랙리스트된다."""
+        refresh = RefreshToken.for_user(verified_user)
+        response = api_client.post(
+            REFRESH_URL, {"refresh": str(refresh)}, format="json"
+        )
+        assert response.status_code == 200
+
+        # 이전 refresh token으로 다시 갱신 시도
+        response = api_client.post(
+            REFRESH_URL, {"refresh": str(refresh)}, format="json"
+        )
+        assert response.status_code == 401

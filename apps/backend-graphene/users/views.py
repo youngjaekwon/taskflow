@@ -134,7 +134,8 @@ class LogoutView(APIView):
         refresh_token = serializer.validated_data["refresh"]
         try:
             token = RefreshToken(refresh_token)
-            token.blacklist()
+            user = User.objects.get(id=token["user_id"])
+            invalidate_all_tokens(user)
         except TokenError:
             return Response(
                 {"detail": "유효하지 않은 토큰입니다."},
