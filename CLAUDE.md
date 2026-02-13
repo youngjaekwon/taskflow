@@ -70,8 +70,11 @@ pnpm docker:build # docker compose build
 
 ## 개발 컨벤션
 
+- **Python 패키지 매니저**: uv
+- **Python 린터 & 포매터**: ruff
 - **`rm` 사용 시**: 반드시 `-f` 플래그를 붙여야 한다 (예: `rm -f`, `rm -rf`)
 - **패키지 네이밍**: `@taskflow/<패키지명>` (예: `@taskflow/web`)
 - **워크스페이스**: `apps/*`, `packages/*`
 - **Dockerfile 위치**: 각 앱 디렉터리 내부 (`apps/<앱>/Dockerfile`), 빌드 컨텍스트는 레포 루트
 - **현재 상태**: 보일러플레이트 단계 — 각 앱의 스크립트와 Dockerfile은 placeholder
+- **Django 테스트 URL**: 테스트에서 URL을 하드코딩하지 않고 `reverse(name)`을 사용하여 동적으로 획득한다. URL 설정 시 `app_name`과 `namespace`를 반드시 지정하고, `reverse("namespace:name")` 형식으로 참조한다

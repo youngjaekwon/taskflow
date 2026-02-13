@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "echo 'Django Graphene dev server placeholder'",
-    "build": "echo 'Django Graphene build placeholder'",
-    "test": "echo 'Django Graphene test placeholder'",
-    "lint": "echo 'lint placeholder'"
+    "dev": "uv run manage.py runserver 0.0.0.0:8000",
+    "test": "uv run pytest",
+    "lint": "uv run ruff check .",
+    "lint:fix": "uv run ruff check --fix . && uv run ruff format .",
+    "migrate": "uv run manage.py migrate",
+    "makemigrations": "uv run manage.py makemigrations"
   }
 }
