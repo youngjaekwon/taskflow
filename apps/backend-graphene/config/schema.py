@@ -1,13 +1,14 @@
 import graphene
 
+from organizations.schema import OrganizationMutation, OrganizationQuery
 from users.schema import UserMutation, UserQuery
 
 
-class Query(UserQuery, graphene.ObjectType):
+class Query(UserQuery, OrganizationQuery, graphene.ObjectType):
     pass
 
 
-class Mutation(UserMutation, graphene.ObjectType):
+class Mutation(UserMutation, OrganizationMutation, graphene.ObjectType):
     pass
 
 

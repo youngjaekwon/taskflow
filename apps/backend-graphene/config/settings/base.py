@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     # Local
     "users",
+    "organizations",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
