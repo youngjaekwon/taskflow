@@ -78,3 +78,4 @@ pnpm docker:build # docker compose build
 - **Dockerfile 위치**: 각 앱 디렉터리 내부 (`apps/<앱>/Dockerfile`), 빌드 컨텍스트는 레포 루트
 - **현재 상태**: 보일러플레이트 단계 — 각 앱의 스크립트와 Dockerfile은 placeholder
 - **Django 테스트 URL**: 테스트에서 URL을 하드코딩하지 않고 `reverse(name)`을 사용하여 동적으로 획득한다. URL 설정 시 `app_name`과 `namespace`를 반드시 지정하고, `reverse("namespace:name")` 형식으로 참조한다
+- **Django 관리 커맨드 우선**: `django-admin` 또는 `manage.py`로 수행할 수 있는 작업(앱 생성, 마이그레이션 생성/적용, 슈퍼유저 생성, collectstatic 등)은 파일을 직접 작성하지 않고 반드시 해당 커맨드를 실행하여 처리한다

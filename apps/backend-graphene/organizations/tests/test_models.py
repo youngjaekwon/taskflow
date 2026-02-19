@@ -48,9 +48,7 @@ class TestOrganizationModel:
 
 @pytest.mark.django_db
 class TestOrganizationMembershipModel:
-    def test_create_membership(
-        self, organization_factory, user_factory
-    ):
+    def test_create_membership(self, organization_factory, user_factory):
         org = organization_factory()
         user = user_factory()
         membership = OrganizationMembership.objects.create(
@@ -60,9 +58,7 @@ class TestOrganizationMembershipModel:
         assert membership.organization == org
         assert membership.user == user
 
-    def test_unique_together_constraint(
-        self, organization_factory, user_factory
-    ):
+    def test_unique_together_constraint(self, organization_factory, user_factory):
         org = organization_factory()
         user = user_factory()
         OrganizationMembership.objects.create(
@@ -76,27 +72,19 @@ class TestOrganizationMembershipModel:
     def test_default_role_is_member(self, organization_factory, user_factory):
         org = organization_factory()
         user = user_factory()
-        membership = OrganizationMembership.objects.create(
-            organization=org, user=user
-        )
+        membership = OrganizationMembership.objects.create(organization=org, user=user)
         assert membership.role == Role.MEMBER
 
     def test_invited_by_nullable(self, organization_factory, user_factory):
         org = organization_factory()
         user = user_factory()
-        membership = OrganizationMembership.objects.create(
-            organization=org, user=user
-        )
+        membership = OrganizationMembership.objects.create(organization=org, user=user)
         assert membership.invited_by is None
 
-    def test_cascade_on_organization_delete(
-        self, organization_factory, user_factory
-    ):
+    def test_cascade_on_organization_delete(self, organization_factory, user_factory):
         org = organization_factory()
         user = user_factory()
-        OrganizationMembership.objects.create(
-            organization=org, user=user
-        )
+        OrganizationMembership.objects.create(organization=org, user=user)
         org_id = org.id
         org.delete()
         assert not OrganizationMembership.objects.filter(

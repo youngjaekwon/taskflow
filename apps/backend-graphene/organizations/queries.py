@@ -9,9 +9,7 @@ from users.decorators import login_required
 
 class OrganizationQuery(graphene.ObjectType):
     my_organizations = graphene.List(graphene.NonNull(OrganizationType))
-    organization = graphene.Field(
-        OrganizationType, id=graphene.ID(required=True)
-    )
+    organization = graphene.Field(OrganizationType, id=graphene.ID(required=True))
 
     @login_required
     def resolve_my_organizations(root, info):
