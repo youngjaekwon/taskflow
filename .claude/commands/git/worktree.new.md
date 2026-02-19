@@ -11,28 +11,28 @@ tags: [git, worktree]
 $ARGUMENTS
 ```
 
-Conventional Commits 형식의 문자열을 받는다: `<type>(<scope>): <subject>` 또는 `<type>: <subject>`
+브랜치명을 직접 받는다: `<type>/<scope>/<subject>` 또는 `<type>/<subject>`
 
 ## 절차
 
 1. `$ARGUMENTS`가 비어있으면 아래 **사용법 안내**를 출력하고 종료한다
 2. `$ARGUMENTS`를 파싱하여 type, scope(선택), subject를 추출한다
-   - 정규식: `^(feat|fix|refactor|docs|style|test|chore|ci|perf)(\(([^)]+)\))?:\s*(.+)$`
+   - 정규식: `^(feat|fix|refactor|docs|style|test|chore|ci|perf)/(?:([^/]+)/)?([^/]+)$`
+   - 3세그먼트(`type/scope/subject`)와 2세그먼트(`type/subject`) 모두 허용한다
    - 파싱 실패 시 올바른 형식을 안내하고 종료한다
-3. subject를 kebab-case로 변환한다 (소문자화, 공백을 하이픈으로 치환)
-4. 브랜치명과 워크트리 경로를 조합한다:
+3. 워크트리 경로를 조합한다:
 
    | 항목          | scope 있음                          | scope 없음                  |
    | ------------- | ----------------------------------- | --------------------------- |
-   | 브랜치명      | `<type>/<scope>/<subject-kebab>`    | `<type>/<subject-kebab>`    |
-   | 워크트리 경로 | `../<type>-<scope>-<subject-kebab>` | `../<type>-<subject-kebab>` |
+   | 브랜치명      | 입력 그대로 사용                    | 입력 그대로 사용            |
+   | 워크트리 경로 | `../<type>-<scope>-<subject>` | `../<type>-<subject>` |
 
-5. 동일 브랜치가 이미 존재하는지 `git branch --list <브랜치명>`으로 확인한다
+4. 동일 브랜치가 이미 존재하는지 `git branch --list <브랜치명>`으로 확인한다
    - 존재하면 "이미 존재하는 브랜치입니다: `<브랜치명>`"을 알리고 종료한다
-6. 워크트리 경로가 이미 존재하는지 확인한다
+5. 워크트리 경로가 이미 존재하는지 확인한다
    - 존재하면 "이미 존재하는 경로입니다: `<경로>`"를 알리고 종료한다
-7. `git worktree add <워크트리 경로> -b <브랜치명>`을 실행한다
-8. 생성 결과를 아래 형식으로 출력한다:
+6. `git worktree add <워크트리 경로> -b <브랜치명>`을 실행한다
+7. 생성 결과를 아래 형식으로 출력한다:
 
 ```
 워크트리가 생성되었습니다.
@@ -54,18 +54,18 @@ cd <워크트리 경로>
 ## 사용법 안내
 
 ```
-사용법: /git:worktree.new <type>(<scope>): <subject>
+사용법: /git:worktree.new <type>/<scope>/<subject> 또는 <type>/<subject>
 
 예시:
-  /git:worktree.new feat(web): add task list component
-  /git:worktree.new fix(backend-graphene): handle empty query
-  /git:worktree.new chore: update dependencies
+  /git:worktree.new feat/web/add-task-list-component
+  /git:worktree.new fix/backend-graphene/handle-empty-query
+  /git:worktree.new chore/update-dependencies
 
 Type: feat, fix, refactor, docs, style, test, chore, ci, perf
 Scope: 선택사항 (web, backend-graphene, backend-strawberry 등)
 ```
 
-## 참조 컨벤션 (/git:commit과 동일)
+## 참조 컨벤션
 
 ### Type
 
@@ -84,3 +84,8 @@ Scope: 선택사항 (web, backend-graphene, backend-strawberry 등)
 ### Scope
 
 선택사항. 해당 앱/패키지명을 사용한다: `web`, `backend-graphene`, `backend-strawberry` 등.
+
+### 브랜치명 형식
+
+- scope 있음: `<type>/<scope>/<subject>` (예: `feat/backend-graphene/project-service`)
+- scope 없음: `<type>/<subject>` (예: `chore/update-dependencies`)
