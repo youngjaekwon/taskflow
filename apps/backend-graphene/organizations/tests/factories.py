@@ -22,7 +22,5 @@ class OrganizationMembershipFactory(factory.django.DjangoModelFactory):
         model = OrganizationMembership
 
     organization = factory.SubFactory(OrganizationFactory)
-    user = factory.SubFactory(
-        "users.tests.factories.UserFactory", email_verified=True
-    )
+    user = factory.SubFactory("users.tests.factories.UserFactory", email_verified=True)
     role = Role.MEMBER

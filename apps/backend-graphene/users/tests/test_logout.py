@@ -31,11 +31,15 @@ class TestLogoutView:
         refresh2 = RefreshToken.for_user(verified_user)
 
         # refresh1으로 로그아웃
-        response = api_client.post(LOGOUT_URL, {"refresh": str(refresh1)}, format="json")
+        response = api_client.post(
+            LOGOUT_URL, {"refresh": str(refresh1)}, format="json"
+        )
         assert response.status_code == 200
 
         # refresh2도 무효화되었는지 확인
-        response = api_client.post(LOGOUT_URL, {"refresh": str(refresh2)}, format="json")
+        response = api_client.post(
+            LOGOUT_URL, {"refresh": str(refresh2)}, format="json"
+        )
         assert response.status_code == 400
 
     def test_logout_missing_refresh(self, api_client):

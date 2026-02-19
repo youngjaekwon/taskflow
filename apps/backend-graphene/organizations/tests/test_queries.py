@@ -62,9 +62,7 @@ class TestMyOrganizationsQuery:
         orgs = data["data"]["myOrganizations"]
         assert len(orgs) == 2
 
-    def test_excludes_non_member_organizations(
-        self, auth_client, organization_factory
-    ):
+    def test_excludes_non_member_organizations(self, auth_client, organization_factory):
         organization_factory(name="Not mine")
 
         response = auth_client.post(
@@ -99,10 +97,12 @@ class TestOrganizationDetailQuery:
 
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": ORGANIZATION_DETAIL_QUERY,
-                "variables": {"id": str(org.id)},
-            }),
+            json.dumps(
+                {
+                    "query": ORGANIZATION_DETAIL_QUERY,
+                    "variables": {"id": str(org.id)},
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -118,10 +118,12 @@ class TestOrganizationDetailQuery:
 
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": ORGANIZATION_DETAIL_QUERY,
-                "variables": {"id": str(org.id)},
-            }),
+            json.dumps(
+                {
+                    "query": ORGANIZATION_DETAIL_QUERY,
+                    "variables": {"id": str(org.id)},
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -131,10 +133,12 @@ class TestOrganizationDetailQuery:
     def test_nonexistent_organization(self, auth_client):
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": ORGANIZATION_DETAIL_QUERY,
-                "variables": {"id": "99999"},
-            }),
+            json.dumps(
+                {
+                    "query": ORGANIZATION_DETAIL_QUERY,
+                    "variables": {"id": "99999"},
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -155,10 +159,12 @@ class TestOrganizationDetailQuery:
 
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": ORGANIZATION_DETAIL_QUERY,
-                "variables": {"id": str(org.id)},
-            }),
+            json.dumps(
+                {
+                    "query": ORGANIZATION_DETAIL_QUERY,
+                    "variables": {"id": str(org.id)},
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200

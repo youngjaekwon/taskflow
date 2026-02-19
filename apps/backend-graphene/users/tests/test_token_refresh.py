@@ -39,7 +39,9 @@ class TestTokenRefreshView:
         assert "refresh" in response.data
         assert response.data["refresh"] != str(refresh)
 
-    def test_old_refresh_token_blacklisted_after_rotation(self, api_client, verified_user):
+    def test_old_refresh_token_blacklisted_after_rotation(
+        self, api_client, verified_user
+    ):
         """갱신 후 이전 refresh token이 블랙리스트된다."""
         refresh = RefreshToken.for_user(verified_user)
         response = api_client.post(

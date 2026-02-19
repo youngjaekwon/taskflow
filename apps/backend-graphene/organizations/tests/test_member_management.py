@@ -3,8 +3,8 @@ import json
 import pytest
 from django.urls import reverse
 
+from conftest import make_auth_client
 from organizations.models import OrganizationMembership, Role
-from organizations.tests.conftest import make_auth_client
 
 GRAPHQL_URL = reverse("graphql")
 
@@ -61,15 +61,17 @@ class TestInviteMember:
         user_factory(email="invitee@example.com", email_verified=True)
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": INVITE_MEMBER,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "email": "invitee@example.com",
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": INVITE_MEMBER,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "email": "invitee@example.com",
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -86,15 +88,17 @@ class TestInviteMember:
         client = make_auth_client(admin_user)
         response = client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": INVITE_MEMBER,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "email": "admin_invite@example.com",
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": INVITE_MEMBER,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "email": "admin_invite@example.com",
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -109,15 +113,17 @@ class TestInviteMember:
         client = make_auth_client(member_user)
         response = client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": INVITE_MEMBER,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "email": "target@example.com",
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": INVITE_MEMBER,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "email": "target@example.com",
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -127,15 +133,17 @@ class TestInviteMember:
     def test_invite_nonexistent_email(self, auth_client, org_with_owner):
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": INVITE_MEMBER,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "email": "noone@example.com",
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": INVITE_MEMBER,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "email": "noone@example.com",
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -143,24 +151,24 @@ class TestInviteMember:
         expected = "해당 이메일의 사용자를 찾을 수 없습니다."
         assert data["errors"][0]["message"] == expected
 
-    def test_invite_already_member(
-        self, auth_client, org_with_owner, user_factory
-    ):
+    def test_invite_already_member(self, auth_client, org_with_owner, user_factory):
         target = user_factory(email="already@example.com")
         OrganizationMembership.objects.create(
             organization=org_with_owner, user=target, role=Role.MEMBER
         )
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": INVITE_MEMBER,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "email": "already@example.com",
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": INVITE_MEMBER,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "email": "already@example.com",
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -178,16 +186,18 @@ class TestUpdateMemberRole:
         )
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": UPDATE_MEMBER_ROLE,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(member_user.id),
-                        "role": "admin",
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": UPDATE_MEMBER_ROLE,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(member_user.id),
+                            "role": "admin",
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -202,40 +212,42 @@ class TestUpdateMemberRole:
         )
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": UPDATE_MEMBER_ROLE,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(admin_user.id),
-                        "role": "member",
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": UPDATE_MEMBER_ROLE,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(admin_user.id),
+                            "role": "member",
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
         data = response.json()
         assert data["data"]["updateMemberRole"]["membership"]["role"] == "MEMBER"
 
-    def test_cannot_set_role_to_owner(
-        self, auth_client, org_with_owner, member_user
-    ):
+    def test_cannot_set_role_to_owner(self, auth_client, org_with_owner, member_user):
         OrganizationMembership.objects.create(
             organization=org_with_owner, user=member_user, role=Role.MEMBER
         )
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": UPDATE_MEMBER_ROLE,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(member_user.id),
-                        "role": "owner",
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": UPDATE_MEMBER_ROLE,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(member_user.id),
+                            "role": "owner",
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -255,41 +267,43 @@ class TestUpdateMemberRole:
         client = make_auth_client(admin_user)
         response = client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": UPDATE_MEMBER_ROLE,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(other_admin.id),
-                        "role": "member",
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": UPDATE_MEMBER_ROLE,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(other_admin.id),
+                            "role": "member",
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
         data = response.json()
         assert "Admin" in data["errors"][0]["message"]
 
-    def test_cannot_change_owner_role(
-        self, org_with_owner, admin_user, verified_user
-    ):
+    def test_cannot_change_owner_role(self, org_with_owner, admin_user, verified_user):
         OrganizationMembership.objects.create(
             organization=org_with_owner, user=admin_user, role=Role.ADMIN
         )
         client = make_auth_client(admin_user)
         response = client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": UPDATE_MEMBER_ROLE,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(verified_user.id),
-                        "role": "admin",
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": UPDATE_MEMBER_ROLE,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(verified_user.id),
+                            "role": "admin",
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -299,23 +313,23 @@ class TestUpdateMemberRole:
 
 @pytest.mark.django_db
 class TestRemoveMember:
-    def test_owner_can_remove_member(
-        self, auth_client, org_with_owner, member_user
-    ):
+    def test_owner_can_remove_member(self, auth_client, org_with_owner, member_user):
         OrganizationMembership.objects.create(
             organization=org_with_owner, user=member_user, role=Role.MEMBER
         )
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": REMOVE_MEMBER,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(member_user.id),
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": REMOVE_MEMBER,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(member_user.id),
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -325,32 +339,30 @@ class TestRemoveMember:
             organization=org_with_owner, user=member_user
         ).exists()
 
-    def test_owner_can_remove_admin(
-        self, auth_client, org_with_owner, admin_user
-    ):
+    def test_owner_can_remove_admin(self, auth_client, org_with_owner, admin_user):
         OrganizationMembership.objects.create(
             organization=org_with_owner, user=admin_user, role=Role.ADMIN
         )
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": REMOVE_MEMBER,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(admin_user.id),
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": REMOVE_MEMBER,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(admin_user.id),
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
         data = response.json()
         assert data["data"]["removeMember"]["success"] is True
 
-    def test_admin_can_remove_member(
-        self, org_with_owner, admin_user, member_user
-    ):
+    def test_admin_can_remove_member(self, org_with_owner, admin_user, member_user):
         OrganizationMembership.objects.create(
             organization=org_with_owner, user=admin_user, role=Role.ADMIN
         )
@@ -360,15 +372,17 @@ class TestRemoveMember:
         client = make_auth_client(admin_user)
         response = client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": REMOVE_MEMBER,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(member_user.id),
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": REMOVE_MEMBER,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(member_user.id),
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -388,48 +402,48 @@ class TestRemoveMember:
         client = make_auth_client(admin_user)
         response = client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": REMOVE_MEMBER,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(other_admin.id),
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": REMOVE_MEMBER,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(other_admin.id),
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
         data = response.json()
         assert "Member만" in data["errors"][0]["message"]
 
-    def test_cannot_remove_owner(
-        self, org_with_owner, admin_user, verified_user
-    ):
+    def test_cannot_remove_owner(self, org_with_owner, admin_user, verified_user):
         OrganizationMembership.objects.create(
             organization=org_with_owner, user=admin_user, role=Role.ADMIN
         )
         client = make_auth_client(admin_user)
         response = client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": REMOVE_MEMBER,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(verified_user.id),
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": REMOVE_MEMBER,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(verified_user.id),
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
         data = response.json()
         assert "Owner" in data["errors"][0]["message"]
 
-    def test_member_cannot_remove(
-        self, org_with_owner, member_user, user_factory
-    ):
+    def test_member_cannot_remove(self, org_with_owner, member_user, user_factory):
         other = user_factory()
         OrganizationMembership.objects.create(
             organization=org_with_owner, user=member_user, role=Role.MEMBER
@@ -440,15 +454,17 @@ class TestRemoveMember:
         client = make_auth_client(member_user)
         response = client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": REMOVE_MEMBER,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(other.id),
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": REMOVE_MEMBER,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(other.id),
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -466,15 +482,17 @@ class TestTransferOwnership:
         )
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": TRANSFER_OWNERSHIP,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(admin_user.id),
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": TRANSFER_OWNERSHIP,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(admin_user.id),
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -491,9 +509,7 @@ class TestTransferOwnership:
         )
         assert old_owner.role == Role.ADMIN
 
-    def test_admin_cannot_transfer(
-        self, org_with_owner, admin_user, member_user
-    ):
+    def test_admin_cannot_transfer(self, org_with_owner, admin_user, member_user):
         OrganizationMembership.objects.create(
             organization=org_with_owner, user=admin_user, role=Role.ADMIN
         )
@@ -503,35 +519,37 @@ class TestTransferOwnership:
         client = make_auth_client(admin_user)
         response = client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": TRANSFER_OWNERSHIP,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(member_user.id),
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": TRANSFER_OWNERSHIP,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(member_user.id),
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
         data = response.json()
         assert data["errors"][0]["message"] == "권한이 부족합니다."
 
-    def test_cannot_transfer_to_self(
-        self, auth_client, org_with_owner, verified_user
-    ):
+    def test_cannot_transfer_to_self(self, auth_client, org_with_owner, verified_user):
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": TRANSFER_OWNERSHIP,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(verified_user.id),
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": TRANSFER_OWNERSHIP,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(verified_user.id),
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -544,15 +562,17 @@ class TestTransferOwnership:
         non_member = user_factory()
         response = auth_client.post(
             GRAPHQL_URL,
-            json.dumps({
-                "query": TRANSFER_OWNERSHIP,
-                "variables": {
-                    "input": {
-                        "organizationId": str(org_with_owner.id),
-                        "userId": str(non_member.id),
-                    }
-                },
-            }),
+            json.dumps(
+                {
+                    "query": TRANSFER_OWNERSHIP,
+                    "variables": {
+                        "input": {
+                            "organizationId": str(org_with_owner.id),
+                            "userId": str(non_member.id),
+                        }
+                    },
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
