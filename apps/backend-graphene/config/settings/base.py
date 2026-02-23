@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "users",
     "organizations",
     "projects",
+    "boards",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
