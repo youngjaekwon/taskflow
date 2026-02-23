@@ -58,11 +58,15 @@ $ARGUMENTS
 ### 5. PR 생성
 
 - `gh pr create --base main`을 사용한다
-- **타이틀**: 한국어로 작성, 70자 이내
+- **타이틀**: Conventional Commits 형식으로 작성, 70자 이내
+  - 형식: `<type>(<scope>): <한국어 설명>`
+  - 커밋의 type/scope를 그대로 사용하되, subject는 한국어로 변경사항을 요약한다
+  - 커밋이 여러 개인 경우 전체 변경사항을 대표하는 type/scope를 선택한다
+  - 예: `feat(backend-graphene): Project 서비스 CRUD 및 멤버 관리 추가`
 - **본문**: HEREDOC을 사용하여 다음 구조로 작성한다:
 
   ```bash
-  gh pr create --base main --title "<한국어 타이틀>" --body "$(cat <<'EOF'
+  gh pr create --base main --title "<type>(<scope>): <한국어 설명>" --body "$(cat <<'EOF'
   ## Summary
   <변경사항 요약 — 1~3개 bullet point>
 
