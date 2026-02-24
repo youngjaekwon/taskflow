@@ -25,6 +25,11 @@ class TaskType(DjangoObjectType):
             "updated_at",
         ]
 
+    comment_count = graphene.Int()
+
+    def resolve_comment_count(self, info):
+        return self.comments.count()
+
 
 class TaskConnectionType(graphene.ObjectType):
     tasks = graphene.List(graphene.NonNull(TaskType))
@@ -78,8 +83,3 @@ class TaskFilterInput(graphene.InputObjectType):
     due_date_from = graphene.Date()
     due_date_to = graphene.Date()
     search = graphene.String()
-
-
-class PaginationInput(graphene.InputObjectType):
-    limit = graphene.Int()
-    offset = graphene.Int()
