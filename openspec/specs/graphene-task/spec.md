@@ -180,13 +180,13 @@ The system SHALL allow clearing the assignee by passing null.
 ### Requirement: Task Detail Query
 
 The system SHALL allow authenticated users with project access to query a single Task by ID.
-The system SHALL return all Task fields including assignee and task_group information.
+The system SHALL return all Task fields including assignee, task_group, and labels information.
 
 #### Scenario: Task 상세 조회 성공
 
 - **GIVEN** 인증된 사용자가 프로젝트 접근 권한이 있는 경우
 - **WHEN** `task` query를 유효한 Task ID로 호출하면
-- **THEN** Task의 모든 필드(title, description, status, priority, assignee, due_date, task_group, position, created_by, created_at, updated_at)가 반환된다
+- **THEN** Task의 모든 필드(title, description, status, priority, assignee, due_date, task_group, position, labels, created_by, created_at, updated_at)가 반환된다
 
 #### Scenario: Task 상세 조회 권한 없음
 
@@ -203,7 +203,7 @@ The system SHALL return all Task fields including assignee and task_group inform
 ### Requirement: Task List Query with Filtering
 
 The system SHALL allow authenticated users with project access to query a list of Tasks for a given Project.
-The system SHALL support filtering by status (multiple), priority (multiple), assignee, due_date range, and keyword search (title, description icontains).
+The system SHALL support filtering by status (multiple), priority (multiple), assignee, due_date range, keyword search (title, description icontains), and label_ids (multiple, OR condition).
 The system SHALL return Tasks ordered by task_group position, then by task position within each group by default.
 
 #### Scenario: Project별 Task 목록 조회
@@ -241,6 +241,13 @@ The system SHALL return Tasks ordered by task_group position, then by task posit
 - **GIVEN** 인증된 사용자가 프로젝트 접근 권한이 있는 경우
 - **WHEN** `tasks` query에 search 키워드를 지정하면
 - **THEN** 제목 또는 설명에 해당 키워드를 포함하는 Task만 반환된다
+
+#### Scenario: Label 필터링
+
+- **GIVEN** 인증된 사용자가 프로젝트 접근 권한이 있는 경우
+- **WHEN** `tasks` query에 label_ids 필터를 `[labelId1, labelId2]`로 지정하면
+- **THEN** 지정된 Label 중 하나 이상이 할당된 Task만 반환된다 (OR 조건)
+- **AND** 중복 없이 반환된다
 
 ### Requirement: Task List Pagination
 
