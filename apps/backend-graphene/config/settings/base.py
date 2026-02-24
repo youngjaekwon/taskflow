@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "organizations",
     "projects",
     "boards",
+    "tasks",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -171,6 +172,10 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# GraphQL Pagination
+GRAPHQL_PAGINATION_DEFAULT_LIMIT = 20
+GRAPHQL_PAGINATION_MAX_LIMIT = 100
 
 # Simple JWT
 SIMPLE_JWT = {

@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from boards.models import TaskGroup
 from conftest import make_auth_client
+from tasks.tests.factories import TaskFactory
 
 GRAPHQL_URL = reverse("graphql")
 
@@ -423,6 +424,37 @@ class TestDeleteTaskGroup:
         assert response.status_code == 200
         data = response.json()
         assert data["errors"][0]["message"] == "로그인이 필요합니다."
+
+    def test_blocked_by_existing_tasks(
+        self,
+        auth_client,
+        verified_user,
+        org_with_owner,
+        project_with_member,
+    ):
+        board = project_with_member.boards.first()
+        tg = board.task_groups.first()
+        TaskFactory(task_group=tg, created_by=verified_user)
+        response = auth_client.post(
+            GRAPHQL_URL,
+            json.dumps(
+                {
+                    "query": self.QUERY,
+                    "variables": {
+                        "input": {
+                            "boardId": str(board.id),
+                            "taskGroupId": str(tg.id),
+                        }
+                    },
+                }
+            ),
+            content_type="application/json",
+        )
+        assert response.status_code == 200
+        data = response.json()
+        err_msg = data["errors"][0]["message"]
+        assert "Task가 존재하는 TaskGroup은 삭제할 수 없습니다" in err_msg
+        assert TaskGroup.objects.filter(pk=tg.id).exists()
 
 
 # ── ReorderTaskGroups ──

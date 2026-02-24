@@ -1,5 +1,4 @@
 import graphene
-from django.core.exceptions import ValidationError as DjangoValidationError
 from graphql import GraphQLError
 
 from boards.decorators import board_admin_required
@@ -14,16 +13,8 @@ from boards.types import (
     UpdateBoardInput,
     UpdateTaskGroupInput,
 )
+from graphql_utils import validate_fields
 from projects.decorators import project_admin_required
-
-
-def _validate_fields(instance, field_names):
-    exclude = [f.name for f in instance._meta.fields if f.name not in field_names]
-    try:
-        instance.clean_fields(exclude=exclude)
-    except DjangoValidationError as e:
-        messages = [msg for errors in e.message_dict.values() for msg in errors]
-        raise GraphQLError("; ".join(messages))
 
 
 def _get_task_group_for_board(task_group_id, board):
@@ -60,7 +51,7 @@ class CreateBoard(graphene.Mutation):
             created_by=user,
             **data,
         )
-        _validate_fields(board, data)
+        validate_fields(board, data)
         board.save()
         return CreateBoard(board=board)
 
@@ -87,7 +78,7 @@ class UpdateBoard(graphene.Mutation):
         for field, value in data.items():
             setattr(board, field, value)
 
-        _validate_fields(board, data)
+        validate_fields(board, data)
         board.save()
         return UpdateBoard(board=board)
 
@@ -131,7 +122,7 @@ class CreateTaskGroup(graphene.Mutation):
             board=board,
             position=new_position,
         )
-        _validate_fields(task_group, ["name"])
+        validate_fields(task_group, ["name"])
         task_group.save()
         return CreateTaskGroup(task_group=task_group)
 
@@ -157,7 +148,7 @@ class UpdateTaskGroup(graphene.Mutation):
         for field, value in data.items():
             setattr(task_group, field, value)
 
-        _validate_fields(task_group, data)
+        validate_fields(task_group, data)
         task_group.save()
         return UpdateTaskGroup(task_group=task_group)
 
@@ -171,6 +162,13 @@ class DeleteTaskGroup(graphene.Mutation):
     @board_admin_required
     def mutate(root, info, input):
         task_group = _get_task_group_for_board(input.task_group_id, info.context.board)
+
+        if task_group.tasks.exists():
+            raise GraphQLError(
+                "Task가 존재하는 TaskGroup은 삭제할 수 없습니다. "
+                "먼저 모든 Task를 이동하거나 삭제해 주세요."
+            )
+
         task_group.delete()
         return DeleteTaskGroup(success=True)
 

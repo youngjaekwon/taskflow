@@ -9,6 +9,11 @@ class TaskGroupType(DjangoObjectType):
         model = TaskGroup
         fields = ["id", "name", "position", "created_at", "updated_at"]
 
+    tasks = graphene.List(graphene.NonNull("tasks.types.TaskType"))
+
+    def resolve_tasks(self, info):
+        return self.tasks.all()
+
 
 class BoardType(DjangoObjectType):
     class Meta:
