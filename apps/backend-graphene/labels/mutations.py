@@ -12,7 +12,7 @@ from labels.types import (
     RemoveLabelsFromTaskInput,
     UpdateLabelInput,
 )
-from organizations.decorators import check_role, get_membership
+from organizations.decorators import org_role_required
 from organizations.models import Role
 from tasks.decorators import task_access_required
 from tasks.types import TaskType
@@ -26,20 +26,11 @@ class CreateLabel(graphene.Mutation):
 
     label = graphene.Field(LabelType)
 
-    @staticmethod
+    @org_role_required(Role.ADMIN)
     def mutate(root, info, input):
         user = info.context.user
-        if not user.is_authenticated:
-            raise GraphQLError("로그인이 필요합니다.")
 
-        membership = get_membership(user, input.organization_id)
-        if not membership:
-            raise GraphQLError("이 Organization의 멤버가 아닙니다.")
-
-        if not check_role(membership, Role.ADMIN):
-            raise GraphQLError("권한이 부족합니다.")
-
-        if not input.name or not input.name.strip():
+        if not input.name.strip():
             raise GraphQLError("Label 이름은 비어있을 수 없습니다.")
 
         data = {"name": input.name.strip()}
