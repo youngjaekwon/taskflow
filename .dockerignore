@@ -1,0 +1,7 @@
+**/node_modules
+**/.svelte-kit
+**/.turbo
+**/coverage
+**/__pycache__
+**/.venv
+**/.git
