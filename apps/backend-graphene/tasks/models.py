@@ -43,6 +43,11 @@ class Task(models.Model):
         related_name="assigned_tasks",
     )
     due_date = models.DateField(null=True, blank=True)
+    labels = models.ManyToManyField(
+        "labels.Label",
+        blank=True,
+        related_name="tasks",
+    )
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
