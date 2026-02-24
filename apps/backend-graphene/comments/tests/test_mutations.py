@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from comments.models import Comment
 from conftest import make_auth_client
+from organizations.models import OrganizationMembership, Role
 
 GRAPHQL_URL = reverse("graphql")
 
@@ -322,8 +323,6 @@ class TestUpdateComment:
     ):
         comment = comment_factory(task=task_in_project, author=verified_user)
         other_user = user_factory(email_verified=True)
-        from organizations.models import OrganizationMembership, Role
-
         OrganizationMembership.objects.create(
             organization=org_with_owner,
             user=other_user,
@@ -474,8 +473,6 @@ class TestDeleteComment:
     ):
         comment = comment_factory(task=task_in_project, author=verified_user)
         other_user = user_factory(email_verified=True)
-        from organizations.models import OrganizationMembership, Role
-
         OrganizationMembership.objects.create(
             organization=org_with_owner,
             user=other_user,

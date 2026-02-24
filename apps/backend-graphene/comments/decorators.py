@@ -8,7 +8,7 @@ from tasks.decorators import _check_project_access
 from tasks.models import Task
 
 
-def _resolve_comment_task_context(info, kwargs, args):
+def _resolve_comment_task_context(info, args, kwargs):
     user = info.context.user
     if not user.is_authenticated:
         raise GraphQLError("로그인이 필요합니다.")
@@ -39,14 +39,14 @@ def _resolve_comment_task_context(info, kwargs, args):
 def comment_task_access_required(func):
     @wraps(func)
     def wrapper(root, info, *args, **kwargs):
-        _, org_membership = _resolve_comment_task_context(info, kwargs, args)
+        _, org_membership = _resolve_comment_task_context(info, args, kwargs)
         _check_project_access(org_membership, info.context.project, info.context.user)
         return func(root, info, *args, **kwargs)
 
     return wrapper
 
 
-def _resolve_comment_context(info, kwargs, args):
+def _resolve_comment_context(info, args, kwargs):
     user = info.context.user
     if not user.is_authenticated:
         raise GraphQLError("로그인이 필요합니다.")
@@ -84,7 +84,7 @@ def _resolve_comment_context(info, kwargs, args):
 def comment_author_required(func):
     @wraps(func)
     def wrapper(root, info, *args, **kwargs):
-        comment, org_membership = _resolve_comment_context(info, kwargs, args)
+        comment, org_membership = _resolve_comment_context(info, args, kwargs)
         _check_project_access(org_membership, info.context.project, info.context.user)
 
         if comment.author_id != info.context.user.id:

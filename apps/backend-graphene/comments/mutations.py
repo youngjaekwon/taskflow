@@ -36,13 +36,12 @@ class CreateComment(graphene.Mutation):
         if not content or not content.strip():
             raise GraphQLError("댓글 내용을 입력해주세요.")
 
-        comment = Comment(
+        comment = Comment.objects.create(
             content=content,
             task=task,
             parent=parent,
             author=user,
         )
-        comment.save()
         return CreateComment(comment=comment)
 
 
