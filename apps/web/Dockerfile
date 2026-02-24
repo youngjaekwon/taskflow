@@ -4,15 +4,19 @@
 
 FROM node:22-alpine
 
+RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
+
+WORKDIR /app
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/web/package.json apps/web/package.json
+
+RUN pnpm install --frozen-lockfile --filter @taskflow/web
+
+COPY apps/web/ apps/web/
+
 WORKDIR /app/apps/web
-
-# TODO: Copy package files and install dependencies
-# COPY apps/web/package.json ./
-# RUN pnpm install
-
-# TODO: Copy source code
-# COPY apps/web/ ./
 
 EXPOSE 5173
 
-CMD ["echo", "SvelteKit container placeholder - configure after project setup"]
+CMD ["pnpm", "dev", "--host"]

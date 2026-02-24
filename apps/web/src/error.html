@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>오류 발생</title>
+		<style>
+			body {
+				font-family:
+					system-ui,
+					-apple-system,
+					sans-serif;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				min-height: 100vh;
+				margin: 0;
+				background: #f9fafb;
+				color: #111827;
+			}
+			@media (prefers-color-scheme: dark) {
+				body {
+					background: #111827;
+					color: #f9fafb;
+				}
+			}
+			.error {
+				text-align: center;
+				padding: 2rem;
+			}
+			h1 {
+				font-size: 2rem;
+				margin-bottom: 0.5rem;
+			}
+			p {
+				color: #6b7280;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="error">
+			<h1>%sveltekit.status%</h1>
+			<p>%sveltekit.error.message%</p>
+		</div>
+	</body>
+</html>
