@@ -1,12 +1,11 @@
 import graphene
-from django.conf import settings
 from django.db.models import Q
 
+from graphql_utils import PaginationInput, apply_pagination
 from projects.decorators import project_access_required
 from tasks.decorators import task_access_required
 from tasks.models import Task
 from tasks.types import (
-    PaginationInput,
     TaskConnectionType,
     TaskFilterInput,
     TaskType,
@@ -51,20 +50,7 @@ class TaskQuery(graphene.ObjectType):
             if filter.label_ids:
                 qs = qs.filter(labels__id__in=filter.label_ids).distinct()
 
-        total_count = qs.count()
-
-        limit = settings.GRAPHQL_PAGINATION_DEFAULT_LIMIT
-        offset = 0
-        if pagination:
-            if pagination.limit is not None:
-                max_limit = settings.GRAPHQL_PAGINATION_MAX_LIMIT
-                limit = max(1, min(pagination.limit, max_limit))
-            if pagination.offset is not None:
-                offset = max(0, pagination.offset)
-
-        tasks = qs[offset : offset + limit]
-        has_next = (offset + limit) < total_count
-        has_previous = offset > 0
+        tasks, total_count, has_next, has_previous = apply_pagination(qs, pagination)
 
         return TaskConnectionType(
             tasks=tasks,

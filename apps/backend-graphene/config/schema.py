@@ -1,6 +1,7 @@
 import graphene
 
 from boards.schema import BoardMutation, BoardQuery
+from comments.schema import CommentMutation, CommentQuery
 from labels.schema import LabelMutation, LabelQuery
 from organizations.schema import OrganizationMutation, OrganizationQuery
 from projects.schema import ProjectMutation, ProjectQuery
@@ -14,6 +15,7 @@ class Query(
     ProjectQuery,
     BoardQuery,
     TaskQuery,
+    CommentQuery,
     LabelQuery,
     graphene.ObjectType,
 ):
@@ -26,6 +28,7 @@ class Mutation(
     ProjectMutation,
     BoardMutation,
     TaskMutation,
+    CommentMutation,
     LabelMutation,
     graphene.ObjectType,
 ):
