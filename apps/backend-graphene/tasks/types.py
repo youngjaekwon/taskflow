@@ -20,6 +20,7 @@ class TaskType(DjangoObjectType):
             "position",
             "assignee",
             "due_date",
+            "labels",
             "created_by",
             "created_at",
             "updated_at",
@@ -78,6 +79,7 @@ class TaskFilterInput(graphene.InputObjectType):
     due_date_from = graphene.Date()
     due_date_to = graphene.Date()
     search = graphene.String()
+    label_ids = graphene.List(graphene.NonNull(graphene.ID))
 
 
 class PaginationInput(graphene.InputObjectType):
