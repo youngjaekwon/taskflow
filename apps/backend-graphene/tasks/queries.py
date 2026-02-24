@@ -47,6 +47,8 @@ class TaskQuery(graphene.ObjectType):
                     Q(title__icontains=filter.search)
                     | Q(description__icontains=filter.search)
                 )
+            if filter.label_ids:
+                qs = qs.filter(labels__id__in=filter.label_ids).distinct()
 
         tasks, total_count, has_next, has_previous = apply_pagination(qs, pagination)
 

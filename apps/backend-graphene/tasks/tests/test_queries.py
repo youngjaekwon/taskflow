@@ -5,6 +5,7 @@ import pytest
 from django.urls import reverse
 
 from conftest import make_auth_client
+from labels.tests.factories import LabelFactory
 
 GRAPHQL_URL = reverse("graphql")
 
@@ -579,3 +580,164 @@ class TestTaskPagination:
         result = data["data"]["tasks"]
         assert len(result["tasks"]) == 3
         assert result["hasPrevious"] is False
+
+
+# ── TestTaskLabelFilter ──
+
+
+@pytest.mark.django_db
+class TestTaskLabelFilter:
+    QUERY = """
+        query Tasks(
+            $projectId: ID!
+            $filter: TaskFilterInput
+        ) {
+            tasks(projectId: $projectId, filter: $filter) {
+                tasks {
+                    id
+                    title
+                    labels {
+                        id
+                        name
+                    }
+                }
+                totalCount
+            }
+        }
+    """
+
+    def test_filter_by_label_ids(
+        self,
+        auth_client,
+        verified_user,
+        org_with_owner,
+        project_with_member,
+        task_group_in_project,
+        task_factory,
+    ):
+        label_bug = LabelFactory(
+            organization=org_with_owner, name="Bug", created_by=verified_user
+        )
+        label_feature = LabelFactory(
+            organization=org_with_owner, name="Feature", created_by=verified_user
+        )
+        t1 = task_factory(
+            task_group=task_group_in_project, created_by=verified_user, title="T1"
+        )
+        t1.labels.add(label_bug)
+        t2 = task_factory(
+            task_group=task_group_in_project, created_by=verified_user, title="T2"
+        )
+        t2.labels.add(label_feature)
+        task_factory(
+            task_group=task_group_in_project, created_by=verified_user, title="T3"
+        )
+        response = auth_client.post(
+            GRAPHQL_URL,
+            json.dumps(
+                {
+                    "query": self.QUERY,
+                    "variables": {
+                        "projectId": str(project_with_member.id),
+                        "filter": {"labelIds": [str(label_bug.id)]},
+                    },
+                }
+            ),
+            content_type="application/json",
+        )
+        assert response.status_code == 200
+        data = response.json()
+        result = data["data"]["tasks"]
+        assert result["totalCount"] == 1
+        assert result["tasks"][0]["title"] == "T1"
+
+    def test_filter_by_label_ids_or_condition(
+        self,
+        auth_client,
+        verified_user,
+        org_with_owner,
+        project_with_member,
+        task_group_in_project,
+        task_factory,
+    ):
+        label_bug = LabelFactory(
+            organization=org_with_owner, name="Bug", created_by=verified_user
+        )
+        label_feature = LabelFactory(
+            organization=org_with_owner, name="Feature", created_by=verified_user
+        )
+        t1 = task_factory(
+            task_group=task_group_in_project, created_by=verified_user, title="T1"
+        )
+        t1.labels.add(label_bug)
+        t2 = task_factory(
+            task_group=task_group_in_project, created_by=verified_user, title="T2"
+        )
+        t2.labels.add(label_feature)
+        task_factory(
+            task_group=task_group_in_project, created_by=verified_user, title="T3"
+        )
+        response = auth_client.post(
+            GRAPHQL_URL,
+            json.dumps(
+                {
+                    "query": self.QUERY,
+                    "variables": {
+                        "projectId": str(project_with_member.id),
+                        "filter": {
+                            "labelIds": [
+                                str(label_bug.id),
+                                str(label_feature.id),
+                            ]
+                        },
+                    },
+                }
+            ),
+            content_type="application/json",
+        )
+        assert response.status_code == 200
+        data = response.json()
+        result = data["data"]["tasks"]
+        assert result["totalCount"] == 2
+
+    def test_filter_by_label_ids_no_duplicates(
+        self,
+        auth_client,
+        verified_user,
+        org_with_owner,
+        project_with_member,
+        task_group_in_project,
+        task_factory,
+    ):
+        label_bug = LabelFactory(
+            organization=org_with_owner, name="Bug", created_by=verified_user
+        )
+        label_feature = LabelFactory(
+            organization=org_with_owner, name="Feature", created_by=verified_user
+        )
+        t1 = task_factory(
+            task_group=task_group_in_project, created_by=verified_user, title="T1"
+        )
+        t1.labels.add(label_bug, label_feature)
+        response = auth_client.post(
+            GRAPHQL_URL,
+            json.dumps(
+                {
+                    "query": self.QUERY,
+                    "variables": {
+                        "projectId": str(project_with_member.id),
+                        "filter": {
+                            "labelIds": [
+                                str(label_bug.id),
+                                str(label_feature.id),
+                            ]
+                        },
+                    },
+                }
+            ),
+            content_type="application/json",
+        )
+        assert response.status_code == 200
+        data = response.json()
+        result = data["data"]["tasks"]
+        assert result["totalCount"] == 1

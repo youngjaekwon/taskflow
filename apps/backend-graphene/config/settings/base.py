@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "boards",
     "tasks",
     "comments",
+    "labels",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
