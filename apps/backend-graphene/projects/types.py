@@ -2,7 +2,6 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from projects.models import Project, ProjectMembership
-from users.types import UserType
 
 
 class ProjectType(DjangoObjectType):
@@ -13,16 +12,24 @@ class ProjectType(DjangoObjectType):
             "name",
             "slug",
             "description",
-            "organization",
-            "created_by",
             "created_at",
             "updated_at",
         ]
 
+    organization = graphene.Field("organizations.types.OrganizationType")
+    created_by = graphene.Field("users.types.UserType")
     members = graphene.List(lambda: ProjectMemberType)
 
+    def resolve_organization(self, info):
+        return info.context.organization_by_id_loader.load(self.organization_id)
+
+    def resolve_created_by(self, info):
+        if self.created_by_id is None:
+            return None
+        return info.context.user_by_id_loader.load(self.created_by_id)
+
     def resolve_members(self, info):
-        return self.memberships.select_related("user", "added_by").all()
+        return info.context.memberships_by_project_loader.load(self.id)
 
 
 class ProjectMemberType(DjangoObjectType):
@@ -30,14 +37,19 @@ class ProjectMemberType(DjangoObjectType):
         model = ProjectMembership
         fields = ["id", "joined_at"]
 
-    user = graphene.Field(UserType)
-    added_by = graphene.Field(UserType)
+    user = graphene.Field("users.types.UserType")
+    added_by = graphene.Field("users.types.UserType")
 
     def resolve_user(self, info):
-        return self.user
+        return info.context.user_by_id_loader.load(self.user_id)
 
     def resolve_added_by(self, info):
-        return self.added_by
+        if self.added_by_id is None:
+            return None
+        return info.context.user_by_id_loader.load(self.added_by_id)
+
+
+# ── Input Types ──
 
 
 class CreateProjectInput(graphene.InputObjectType):

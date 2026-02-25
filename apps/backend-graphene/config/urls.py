@@ -7,11 +7,12 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from graphene_django.views import GraphQLView
+
+from config.views import CustomGraphQLView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("graphql/", GraphQLView.as_view(graphiql=True), name="graphql"),
+    path("graphql/", CustomGraphQLView.as_view(graphiql=True), name="graphql"),
     path("api/v1/", include("users.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
 ]

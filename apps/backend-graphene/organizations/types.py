@@ -2,7 +2,6 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from organizations.models import Organization, OrganizationMembership
-from users.types import UserType
 
 
 class OrganizationType(DjangoObjectType):
@@ -13,15 +12,20 @@ class OrganizationType(DjangoObjectType):
             "name",
             "slug",
             "description",
-            "created_by",
             "created_at",
             "updated_at",
         ]
 
+    created_by = graphene.Field("users.types.UserType")
     members = graphene.List(lambda: OrganizationMemberType)
 
+    def resolve_created_by(self, info):
+        if self.created_by_id is None:
+            return None
+        return info.context.user_by_id_loader.load(self.created_by_id)
+
     def resolve_members(self, info):
-        return self.memberships.select_related("user").all()
+        return info.context.memberships_by_organization_loader.load(self.id)
 
 
 class OrganizationMemberType(DjangoObjectType):
@@ -29,10 +33,13 @@ class OrganizationMemberType(DjangoObjectType):
         model = OrganizationMembership
         fields = ["id", "role", "joined_at"]
 
-    user = graphene.Field(UserType)
+    user = graphene.Field("users.types.UserType")
 
     def resolve_user(self, info):
-        return self.user
+        return info.context.user_by_id_loader.load(self.user_id)
+
+
+# ── Input Types ──
 
 
 class CreateOrganizationInput(graphene.InputObjectType):

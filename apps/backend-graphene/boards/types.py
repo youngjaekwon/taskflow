@@ -12,7 +12,7 @@ class TaskGroupType(DjangoObjectType):
     tasks = graphene.List(graphene.NonNull("tasks.types.TaskType"))
 
     def resolve_tasks(self, info):
-        return self.tasks.all()
+        return info.context.tasks_by_task_group_loader.load(self.id)
 
 
 class BoardType(DjangoObjectType):
@@ -23,16 +23,24 @@ class BoardType(DjangoObjectType):
             "name",
             "slug",
             "description",
-            "project",
-            "created_by",
             "created_at",
             "updated_at",
         ]
 
+    project = graphene.Field("projects.types.ProjectType")
+    created_by = graphene.Field("users.types.UserType")
     task_groups = graphene.List(graphene.NonNull(TaskGroupType))
 
+    def resolve_project(self, info):
+        return info.context.project_by_id_loader.load(self.project_id)
+
+    def resolve_created_by(self, info):
+        if self.created_by_id is None:
+            return None
+        return info.context.user_by_id_loader.load(self.created_by_id)
+
     def resolve_task_groups(self, info):
-        return self.task_groups.all()
+        return info.context.task_groups_by_board_loader.load(self.id)
 
 
 # ── Input Types ──
