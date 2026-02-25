@@ -16,20 +16,36 @@ class TaskType(DjangoObjectType):
             "description",
             "status",
             "priority",
-            "task_group",
             "position",
-            "assignee",
             "due_date",
-            "labels",
-            "created_by",
             "created_at",
             "updated_at",
         ]
 
+    task_group = graphene.Field("boards.types.TaskGroupType")
+    assignee = graphene.Field("users.types.UserType")
+    created_by = graphene.Field("users.types.UserType")
+    labels = graphene.List(graphene.NonNull("labels.types.LabelType"))
     comment_count = graphene.Int()
 
+    def resolve_task_group(self, info):
+        return info.context.task_group_by_id_loader.load(self.task_group_id)
+
+    def resolve_assignee(self, info):
+        if self.assignee_id is None:
+            return None
+        return info.context.user_by_id_loader.load(self.assignee_id)
+
+    def resolve_created_by(self, info):
+        if self.created_by_id is None:
+            return None
+        return info.context.user_by_id_loader.load(self.created_by_id)
+
+    def resolve_labels(self, info):
+        return info.context.labels_by_task_loader.load(self.id)
+
     def resolve_comment_count(self, info):
-        return self.comments.count()
+        return info.context.comment_count_by_task_loader.load(self.id)
 
 
 class TaskConnectionType(graphene.ObjectType):

@@ -45,16 +45,43 @@
 
 ## 6. N+1 쿼리 최적화 (Promise DataLoader)
 
+### 6.1 기본 원칙
+
 - graphene-django에는 N+1 자동 해결 내장 기능이 없으므로 DataLoader로 해결한다
 - Promise 기반 DataLoader를 사용한다: `promise` + `graphql-core-promise` 패키지 조합
-- `GraphQLView`에 `execution_context_class=PromiseExecutionContext`를 설정한다
 - 각 Django 앱에 `loaders.py` 파일을 두고 `promise.dataloader.DataLoader`를 상속한 클래스를 정의한다
-- DataLoader 네이밍: 단일 조회는 `{Model}ByIdLoader`, 역방향/M2M은 `{Models}By{FK}Loader`
-- DataLoader 인스턴스는 반드시 요청 단위로 생성한다 (요청 간 공유 금지 — 캐시 오염 방지)
-- 요청별 loader 관리는 커스텀 GQLContext 클래스 + `@cached_property` 패턴을 사용한다
+- DataLoader 네이밍: 단일 조회는 `{Model}ByIdLoader`, 역방향/M2M은 `{Models}By{FK}Loader`, 집계는 `{집계대상}By{FK}Loader`
 - `batch_load_fn`의 반환값은 입력 keys와 동일한 순서·길이를 보장해야 한다
-- 일대다 관계에서는 `defaultdict(list)`로 그룹핑하여 반환한다
 - mutation 이후 관련 loader의 `clear(key)` 또는 `clear_all()`로 캐시를 무효화한다
+
+### 6.2 인프라 구성
+
+- `config/views.py`: `CustomGraphQLView(GraphQLView)`에 `execution_context_class=PromiseExecutionContext` 설정
+- `config/context.py`: `GQLContext` 클래스가 요청별 DataLoader 인스턴스를 `@cached_property`로 관리
+  - `__getattr__`로 Django request 속성에 투명하게 접근
+  - `@property`로 `user` 속성 노출
+- `config/urls.py`: `CustomGraphQLView.as_view(graphiql=True)`로 등록
+
+### 6.3 batch_load_fn 구현 패턴
+
+| 패턴 | 용도 | ORM 기법 | 기본값 |
+|------|------|----------|--------|
+| By ID | 단일 PK 조회 | `Model.objects.in_bulk(keys)` | `None` |
+| 역방향 FK | 일대다 관계 | `filter(fk__in=keys)` + `defaultdict(list)` 그룹핑 | `[]` |
+| M2M | 다대다 관계 | `Model.field.through.objects.filter(...).select_related()` + `defaultdict(list)` | `[]` |
+| 집계 (Count) | 배치 카운트 | `filter().values_list().annotate(Count).values_list()` → `dict()` | `0` |
+
+### 6.4 DjangoObjectType에서의 DataLoader 사용 규칙
+
+- **관계 필드를 Meta.fields에서 제거**하고 클래스 본문에 `graphene.Field()`로 명시 선언한다
+- 모든 관계 필드에 `resolve_{필드명}` 메서드를 정의하고 `info.context.{loader_name}.load(key)`를 반환한다
+- nullable FK는 `if self.xxx_id is None: return None` 가드를 추가한다
+- 순환 참조 타입은 문자열(`"app.types.TypeName"`) 또는 `lambda`로 지연 참조한다
+
+### 6.5 Query에서의 DataLoader 공존 규칙
+
+- DataLoader가 처리하는 관계에 대해 `select_related()` / `prefetch_related()`를 사용하지 않는다 (중복 쿼리 방지)
+- 루트 쿼리의 `filter()`, `order_by()` 등 QuerySet 조작은 그대로 유지한다
 
 ## 7. 테스트 컨벤션
 

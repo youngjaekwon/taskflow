@@ -13,8 +13,4 @@ class LabelQuery(graphene.ObjectType):
 
     @org_member_required
     def resolve_labels(root, info, organization_id):
-        return (
-            Label.objects.filter(organization_id=organization_id)
-            .select_related("organization", "created_by")
-            .order_by("name")
-        )
+        return Label.objects.filter(organization_id=organization_id).order_by("name")

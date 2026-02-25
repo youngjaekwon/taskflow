@@ -11,11 +11,20 @@ class LabelType(DjangoObjectType):
             "id",
             "name",
             "color",
-            "organization",
-            "created_by",
             "created_at",
             "updated_at",
         ]
+
+    organization = graphene.Field("organizations.types.OrganizationType")
+    created_by = graphene.Field("users.types.UserType")
+
+    def resolve_organization(self, info):
+        return info.context.organization_by_id_loader.load(self.organization_id)
+
+    def resolve_created_by(self, info):
+        if self.created_by_id is None:
+            return None
+        return info.context.user_by_id_loader.load(self.created_by_id)
 
 
 # ── Input Types ──

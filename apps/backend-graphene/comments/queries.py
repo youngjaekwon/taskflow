@@ -15,9 +15,7 @@ class CommentQuery(graphene.ObjectType):
 
     @comment_task_access_required
     def resolve_comments(root, info, task_id, pagination=None):
-        qs = Comment.objects.filter(
-            task_id=task_id, parent__isnull=True
-        ).prefetch_related("replies")
+        qs = Comment.objects.filter(task_id=task_id, parent__isnull=True)
 
         comments, total_count, has_next, has_previous = apply_pagination(qs, pagination)
 
