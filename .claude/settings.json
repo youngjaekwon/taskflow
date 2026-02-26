@@ -1,14 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-
-  "enabledPlugins": {
-    "pyright-lsp@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
-    "ralph-loop@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true
-  },
-
   "permissions": {
     "allow": [
       "WebSearch",
@@ -17,23 +8,17 @@
       "mcp__context7__get-library-docs",
       "mcp__plugin_context7_context7__resolve-library-id",
       "mcp__plugin_context7_context7__query-docs",
-
       "Bash(pnpm:*)",
-
       "Bash(npx:*)",
       "Bash(node:*)",
-
       "Bash(python:*)",
       "Bash(python3:*)",
       "Bash(pip:*)",
       "Bash(pip3:*)",
       "Bash(django-admin:*)",
-
       "Bash(uv:*)",
-
       "Bash(docker compose:*)",
       "Bash(docker:*)",
-
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
@@ -52,13 +37,11 @@
       "Bash(git blame:*)",
       "Bash(git rev-parse:*)",
       "Bash(git worktree:*)",
-
       "Bash(gh pr:*)",
       "Bash(gh issue:*)",
       "Bash(gh repo:*)",
       "Bash(gh api:*)",
       "Bash(gh auth status:*)",
-
       "Bash(tree:*)",
       "Bash(ls:*)",
       "Bash(pwd)",
@@ -74,7 +57,6 @@
       "Bash(cp:*)",
       "Bash(mv:*)"
     ],
-
     "deny": [
       "Read(secrets/**)",
       "Read(**/secrets/**)",
@@ -82,12 +64,19 @@
       "Read(~/.ssh/**)",
       "Read(**/.env)",
       "Read(**/.env.*)",
-
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
       "Bash(git reset --hard:*)",
       "Bash(rm -rf:*)",
       "Bash(rm -r:*)"
     ]
+  },
+  "enabledPlugins": {
+    "pyright-lsp@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true
   }
 }

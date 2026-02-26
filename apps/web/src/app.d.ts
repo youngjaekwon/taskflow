@@ -5,7 +5,17 @@ declare global {
 			message: string;
 			errorId?: string;
 		}
-		// interface Locals {}
+		interface Locals {
+			user: {
+				id: string;
+				email: string;
+				username: string;
+				firstName: string;
+				lastName: string;
+				profileImage: string | null;
+			} | null;
+			accessToken: string | null;
+		}
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}

@@ -92,8 +92,8 @@ EMAIL_BACKEND = env(
 
 # Frontend URL (for email links)
 FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:5173")
-FRONTEND_VERIFY_EMAIL_PATH = "/auth/verify-email"
-FRONTEND_RESET_PASSWORD_PATH = "/auth/reset-password"
+FRONTEND_VERIFY_EMAIL_PATH = "/verify-email"
+FRONTEND_RESET_PASSWORD_PATH = "/reset-password"
 
 # Media files
 MEDIA_URL = "/media/"
